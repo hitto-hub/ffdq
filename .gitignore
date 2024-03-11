@@ -1,0 +1,19 @@
+# MacOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# python
+.idea/
+.vscode/
+__pycache__/
+.tox/
+.coverage
+.coverage.*
+htmlcov/
+docs/_build/
+dist/
+venv/
+instance/
+
+.env

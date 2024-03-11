@@ -1,0 +1,58 @@
+version: "3"
+services:
+  flask_backend:
+    build: ./flask_backend
+    ports:
+      - "5000:5000"
+    networks:
+      NofaceNet:
+        ipv4_address: 192.168.10.2
+    volumes:
+      - ./flask_backend:/usr/src/app
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+    command: flask run --host=0.0.0.0
+  flask_frontend:
+    build: ./flask_frontend
+    # depends_on:
+    #   - serviceName: flask_backend
+    #     condition: service_started
+    ports:
+      - "8080:5000"
+    networks:
+      NofaceNet:
+        ipv4_address: 192.168.10.3
+    volumes:
+      - ./flask_frontend:/usr/src/app
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+    command: flask run --host=0.0.0.0
+  discord_bot:
+    build: ./discord_bot
+    networks:
+      - NofaceNet
+    volumes:
+      - ./discord_bot:/usr/src/app
+    command: python bot.py
+  # nginx:
+  #   build: ./nginx
+  #   ports:
+  #     - "80:80"
+  #   networks:
+  #     - NofaceNet
+  #   volumes:
+  #     - ./nginx:/etc/nginx/conf.d
+  #   depends_on:
+  #     - flask_backend
+  #     - flask_frontend
+networks:
+  NofaceNet:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.10.0/24
